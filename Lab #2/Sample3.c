@@ -22,7 +22,7 @@ int main()
 
     }
     else {
-        child = waitpid(pid, &status, 0);
+        child = wait(&status);
         printf("Child PID %ld terminated with return status %d\n", (long) child, status);
     }
 
