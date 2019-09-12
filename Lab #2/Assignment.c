@@ -19,7 +19,7 @@ int main(){
         char input[256];
         char *params[10];
 
-        printf("Please enter Your Command(Or quit to exit): ");
+        printf("Please Enter Your Command(Or quit to exit): ");
         fgets(input, 256 ,stdin);
 
         while(input[0] == '\n' || input[0] == ' ')
@@ -34,7 +34,7 @@ int main(){
             params[i] = tokenize;
             tokenize = strtok(NULL, " ");
         }
-        
+
         if (strstr(params[0], "quit"))
             exit(0);
 
