@@ -26,8 +26,7 @@ int main(){
             fgets(input, 256 ,stdin);
 
         cmdLen = strlen(input);
-        if(cmdLen > 0 && input[cmdLen-1] == '\n')
-            input[cmdLen - 1] = '\0';
+        if(cmdLen > 0 && input[cmdLen-1] == '\n') input[cmdLen - 1] = '\0';
         
         char *tokenize = strtok(input, " ");
         for(int i = 0; i < sizeof(tokenize); i++) {
@@ -35,8 +34,7 @@ int main(){
             tokenize = strtok(NULL, " ");
         }
 
-        if (strstr(params[0], "quit"))
-            exit(0);
+        if (strstr(params[0], "quit")) exit(0);
 
 
         pid = fork();
@@ -44,19 +42,12 @@ int main(){
         if(pid < 0){
             printf("error");
             exit(1);
-        }
-
-        
-
-
-        else if (pid){
+        } else if (pid){
             waitpid(-1, &status, 0);
             getrusage(RUSAGE_CHILDREN, &stats);
             printf("User CPU usage: %ld.%06ld sec\n", stats.ru_utime.tv_sec, stats.ru_utime.tv_usec);
             printf("Context Switches: %ld\n", stats.ru_nivcsw);
-        }
-
-        else {
+        } else {
             execvp(params[0], params);
             exit(0);
         }
