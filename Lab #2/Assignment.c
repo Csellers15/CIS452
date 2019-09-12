@@ -26,8 +26,7 @@ int main(){
         printf("Please Enter Your Command(Or quit to exit): ");
         fgets(input, 256 ,stdin);
 
-        while(input[0] == '\n' || input[0] == ' ')
-            fgets(input, 256 ,stdin);
+        while(input[0] == '\n' || input[0] == ' ') fgets(input, 256 ,stdin);
 
         cmdLen = strlen(input);
         if(cmdLen > 0 && input[cmdLen-1] == '\n') input[cmdLen - 1] = '\0';
