@@ -10,11 +10,15 @@
 
 int main(){
 
+    int totalMicro = 0;
+    int totalSec = 0; 
+
     while(1){
         pid_t pid; 
         int status; 
         int cmdLen;
         struct rusage stats; 
+        int totalSwitches = 0;
 
         char input[256];
         char *params[10];
@@ -44,9 +48,12 @@ int main(){
             exit(1);
         } else if (pid){
             waitpid(-1, &status, 0);
-            getrusage(RUSAGE_CHILDREN, &stats);
-            printf("User CPU usage: %ld.%06ld sec\n", stats.ru_utime.tv_sec, stats.ru_utime.tv_usec);
-            printf("Context Switches: %ld\n", stats.ru_nivcsw);
+            getrusage(RUSAGE_CHILDREN, &stats); 
+            printf("User CPU usage: %ld.%06ld sec\n", (stats.ru_utime.tv_sec - totalSec), (stats.ru_utime.tv_usec - totalMicro));
+            totalSec = stats.ru_utime.tv_sec;
+            totalMicro = stats.ru_utime.tv_usec;
+            printf("Context Switches: %ld\n", stats.ru_nivcsw - totalSwitches);
+            totalSwitches = stats.ru_nivcsw;
         } else {
             execvp(params[0], params);
             exit(0);
