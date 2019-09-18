@@ -51,7 +51,7 @@ int main(){
             printf("User CPU usage: %ld.%06ld sec\n", (stats.ru_utime.tv_sec - totalSec), (stats.ru_utime.tv_usec - totalMicro));
             totalSec = stats.ru_utime.tv_sec;
             totalMicro = stats.ru_utime.tv_usec;
-            printf("Context Switches: %ld\n", stats.ru_nivcsw - totalSwitches);
+            printf("Context Switches: %ld\n", (stats.ru_nivcsw - totalSwitches));
             totalSwitches = stats.ru_nivcsw;
         } else {
             execvp(params[0], params);
