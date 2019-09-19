@@ -33,7 +33,6 @@ int main(){
 		}
 	} 
 
-	
 	printf("parent spawned child PID# %d\nwaiting...   ", pid);
 	waitpid(-1, &status, 0);
 
