@@ -22,7 +22,7 @@ int main(){
 	if(pid < 0) {
 		printf("Fork Failed");
 		exit(1);
-	} else if( pid == 0){
+	}else if( pid == 0){
 		ppid = getppid();
 		signal(SIGINT, sigChildhandler);
 		while(1){
