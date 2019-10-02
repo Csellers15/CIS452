@@ -37,7 +37,7 @@ int main() {
 		exit(1);
 	}
 
-	while(strcmp(sharedData.message, "exit") != 0) {
+	while(1) {
 		while(!sharedData.turn) {
 			memcpy(&sharedData, shmPtr, sizeof(SharedData));
 		}
@@ -46,9 +46,7 @@ int main() {
 
 		sharedData.turn = 0;
 		memcpy(shmPtr, &sharedData, sizeof(SharedData));
-	};
-
-	kill(getpid(),SIGINT);
+	}
 
 	return 0; 
 }
