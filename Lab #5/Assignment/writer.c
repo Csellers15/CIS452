@@ -36,7 +36,8 @@ int main(){
       perror ("i can't get no..\n"); 
       exit (1); 
     } 
-    if ((shmPtr = shmat (shmId, 0, 0)) == (void*) -1) { 
+    
+    if ((shmPtr = shmat(shmId, 0, 0)) == (void*) -1) { 
         perror ("can't attach\n"); 
         exit (1); 
     }
@@ -53,7 +54,7 @@ int main(){
         printf("Message written to memory: %s\n", sharedData.message);
         sharedData.flag = 1;
         memcpy(shmPtr, &sharedData, sizeof(SharedData));
-        }
+    }
 
     kill(getpid(),SIGINT);
 
