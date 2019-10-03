@@ -4,45 +4,65 @@
 #include <sys/stat.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include <sys/msg.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
-#define FOO 4096
+void sigHandler(int);
 
-int shmId;
-char *shmPtr;
+key_t key;
+int mId;
+char *mPtr;
 
-int main ()
-{
-   
-   key_t key = ftok("shmkey", 65);
-   char *buff;
+typedef struct {
+	int turn;
+	char message[1024];
+} DataShared;
 
-   if ((shmId = shmget (key, FOO, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0) {
-      perror ("i can't get no..\n");
-      exit (1);
-   }
-   if ((shmPtr = shmat (shmId, 0, 0)) == (void*) -1) {
-      perror ("can't attach\n");
-      exit (1);
-   }
-   while(1) {
+int main() {
+	DataShared data;
+	data.turn = 0;
+	signal(SIGINT, sigHandler);
 
-      if (strcmp(shmPtr,"")) {
-         //Read from shared memory
-         buff = shmPtr;
-         printf("Read from SM: %s \n", buff);
+	//generates key
+	key = ftok("mkey",65);
 
-         // Empty the SM
-         strcpy(shmPtr, "");
-      }
-      
-   }
-   printf("Detaching.\n");
-      if (shmdt (shmPtr) < 0) {
-         perror ("just can't let go\n");
-         exit (1);
-      }
-   return 0;
-} 
+  	//returns an identifier in mId
+	if ((mId = shmget(key, 4096, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0){
+    perror("shared memory error");
+    exit(1);
+	}
+
+  	// shmat to attach to shared memory
+	if((mPtr = shmat(mId, 0, 0)) == (void*) -1) {
+    perror("Can't attach\n");
+    exit(1);
+	}
+
+	while(1) {
+		while(!data.turn) {
+			memcpy(&data, mPtr, sizeof(DataShared));
+		}
+
+		usleep(1);
+		printf("Read from memory: %s\n", data.message);
+		usleep(1);
+
+		data.turn = 0;
+		memcpy(mPtr, &data, sizeof(DataShared));
+
+	};
+
+	return 0;
+}
+
+
+void sigHandler(int i) {
+	printf("Interrupted");
+
+	if (shmctl(mId, IPC_RMID, NULL) < 0) {
+		perror("What??? We can't deallocate?!?! RUN, RUN NOW!!!");
+		exit(1);
+	}
+	exit(0);
+}
