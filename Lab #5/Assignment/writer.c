@@ -13,39 +13,37 @@
 void sigHandler(int);
 
 key_t key;
-int mId;
-char *mPtr;
+int shmId;
+char *shmPtr;
 
 typedef struct {
     int turn;
     char message[1024];
+    int count;
 } DataShared;
 
 int main() {
     DataShared data;
-    
     data.turn = 0;
+    data.count = 0;
     signal(SIGINT, sigHandler);
 
-    //generate a key
     key = ftok("mkey",65);
 
-    if((mId = shmget(key, SIZE, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0 ) {
-    perror("Error creating shared memory\n");
-    exit(1);
+    if((shmId = shmget(key, SIZE, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0 ) {
+        perror("Error creating shared memory\n");
+        exit(1);
     }
 
-    if((mPtr = shmat(mId, 0, 0)) == (void*) -1) {
-    perror("Can't attach\n");
-    exit(1);
+    if((shmPtr = shmat(shmId, 0, 0)) == (void*) -1) {
+        perror("Can't attach\n");
+        exit(1);
     }
 
     while(1) {
         while (data.turn) {
-            memcpy(&data, mPtr, sizeof(DataShared));
+            memcpy(&data, shmPtr, sizeof(DataShared));
         }
-
-        
         
         // enter critical section
         printf("Enter a message: \n" );
@@ -55,7 +53,7 @@ int main() {
         // leave critical section
         printf("Message written to memory: %s\n", data.message);
         data.turn = 1;
-        memcpy(mPtr, &data, sizeof(DataShared));
+        memcpy(shmPtr, &data, sizeof(DataShared));
     };
 
     return 0;
@@ -65,7 +63,7 @@ void sigHandler(int i) {
     printf("Interrupt called");
 
     if (i == SIGINT) {
-        if (shmdt(mPtr) < 0) {
+        if (shmdt(shmPtr) < 0) {
             perror("Failed to let go\n");
         }
     }
