@@ -28,7 +28,7 @@ int main() {
 	key = ftok("shmkey",65); 
 
 	if ((shmId = shmget(key, FOO, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0){
-		perror("shared memory error");
+		perror("Shared memory error");
 		exit(1);
 	} 
 
@@ -50,6 +50,7 @@ int main() {
 
 	return 0; 
 }
+
 
 void sigHandler(int sigNum){
     printf("Shutting Down\n");

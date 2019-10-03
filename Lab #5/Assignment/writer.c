@@ -27,10 +27,27 @@ int main() {
 
 	key = ftok("shmkey",65); 
 
-	if((shmId = shmget(key, FOO, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0 ) {
-		perror("Error creating shared memory\n");
-		exit(1);
-	} 
+    signal(SIGINT, sigHandler);
+
+    key = ftok("shmkey",65); 
+
+    if ((shmId = shmget (IPC_PRIVATE, FOO, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0) { 
+        perror ("i can't get no..\n"); 
+        exit (1); 
+    } 
+    
+    if ((shmPtr = shmat(shmId, 0, 0)) == (void*) -1) { 
+        perror ("can't attach\n"); 
+        exit (1); 
+    }
+
+    while(strcmp(sharedData.message, "exit") != 0) {
+        while (sharedData.flag) {
+            memcpy(&sharedData, shmPtr, sizeof(SharedData));
+        }
+
+        printf("Enter a message: \n" ); 
+        scanf("%s", sharedData.message);
 
 	if((shmPtr = shmat(shmId, 0, 0)) == (void*) -1) {
 		perror("Can't attach\n");
