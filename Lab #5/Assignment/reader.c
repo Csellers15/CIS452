@@ -8,6 +8,8 @@
 #include <unistd.h>
 #include <signal.h>
 
+#define SIZE 4096
+
 void sigHandler(int);
 
 key_t key;
@@ -29,7 +31,7 @@ int main() {
 	key = ftok("mkey",65);
 
   	//returns an identifier in mId
-	if ((mId = shmget(key, 4096, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0){
+	if ((mId = shmget(key, SIZE, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0){
     perror("shared memory error");
     exit(1);
 	}
@@ -51,10 +53,10 @@ int main() {
 
 		data.count++;
 
-		// enter critical section
 		usleep(1);
 		fprintf(stderr, "Read from memory: %s\n", data.message);
 		usleep(1);
+	
 
 		data.count--;
 
@@ -62,7 +64,6 @@ int main() {
 			;
 		}
 		
-		// leave critical section
 		data.turn = 0;
 		memcpy(mPtr, &data, sizeof(DataShared));
 	};
