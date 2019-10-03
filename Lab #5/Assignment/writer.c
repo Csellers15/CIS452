@@ -41,19 +41,6 @@ int main() {
         exit (1); 
     }
 
-    while(strcmp(sharedData.message, "exit") != 0) {
-        while (sharedData.flag) {
-            memcpy(&sharedData, shmPtr, sizeof(SharedData));
-        }
-
-        printf("Enter a message: \n" ); 
-        scanf("%s", sharedData.message);
-
-	if((shmPtr = shmat(shmId, 0, 0)) == (void*) -1) {
-		perror("Can't attach\n");
-		exit(1);
-	}
-
 	while(1) {
 		while (sharedData.flag) {
 			memcpy(&sharedData, shmPtr, sizeof(SharedData));
