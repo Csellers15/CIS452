@@ -20,7 +20,6 @@ int main (int argc, char **argv)
     int semId;
     int sem_ctl_result;
 
-    
     if ((semId = semget(IPC_PRIVATE, 1, 00600)) < 0) {
         printf("Error fetching semaphore id\n");
         exit(1);
@@ -95,8 +94,8 @@ int main (int argc, char **argv)
 
     // Clean up semaphore after it is no longer needed
     if ((sem_ctl_result = semctl(semId, 0, IPC_RMID)) < 0) {
-    printf("Error removing semaphore\n");
-    exit(1);
+        printf("Error removing semaphore\n");
+        exit(1);
     }
 
     printf ("values: %li\t%li\n", shmPtr[0], shmPtr[1]);
@@ -105,6 +104,7 @@ int main (int argc, char **argv)
         perror ("Error detaching from shared memory\n");
         exit (1);
     }
+    
     if (shmctl (shmId, IPC_RMID, 0) < 0) {
         perror ("Error deallocating shared memory\n");
         exit(1);
