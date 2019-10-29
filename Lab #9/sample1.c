@@ -7,17 +7,20 @@
 int main()
 {
 
-    char *data1 = calloc(1,1), buffer[SIZE];
-    printf ("Please input username: ");
-    while( fgets(buffer, SIZE , stdin)){
-        data1 = realloc( data1, strlen(data1)+1+strlen(buffer) );
-        if( !data1 ) 
-            strcat(data1, buffer);
-        printf ("Enter ctrl-D to break loop\n");
-    }
+    char *data1;
 
-    printf ("you entered: %s", data1);
-    free(data1);
+    data1 = malloc (SIZE);
+    printf ("Please input username: ");
+    fgets (data1, SIZE, stdin);
+    printf ("you entered: %s\n", data1);
+
+    // if(data1 != NULL){
+    //     printf("Your input was larger that %i", SIZE);
+    //     exit(1);
+    // }
+    free (data1);
+    return 0;
+
 }
 
 
