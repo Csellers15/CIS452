@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
   int options;
 
   char* directory = argv[2];
-  if (stat(directory, &stat_buf) < 0) {
+  if (lstat(directory, &stat_buf) < 0) {
     perror("Invalid input supplied");
     return -1;
   }
@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
         stat((entry_ptr->d_name), &st);
         printf("%-20s uid: %d gid: %d\n", entry_ptr->d_name, st.st_uid, st.st_gid);
       }
-      break;
+      break;  
 
     } else if(options == 'i'){
 
@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
         printf("%-20s inode: %lu\n", entry_ptr->d_name, entry_ptr->d_ino);
       }
       break;
-      
+
     }else {
 
       dir_ptr = opendir("./");
