@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
   struct dirent *entry_ptr;
   struct stat stat_buf;
 
-  int opt;
+  int options;
 
   char* directory = argv[2];
   if (stat(directory, &stat_buf) < 0) {
@@ -20,34 +20,36 @@ int main(int argc, char** argv) {
     return -1;
   }
 
-  while ((opt = getopt(argc, argv, "n:i")) != -1) {
-    switch(opt) {
-      case 'n':
-        dir_ptr = opendir(directory);
-        while ((entry_ptr = readdir(dir_ptr))) {
-          struct stat st;
-          stat((entry_ptr->d_name), &st);
-          printf("%-20s uid: %d gid: %d\n", entry_ptr->d_name, st.st_uid, st.st_gid);
-        }
-        break;
-      case 'i':
-        dir_ptr = opendir(directory);
-        while ((entry_ptr = readdir(dir_ptr))) {
-          struct stat st;
-          stat((entry_ptr->d_name), &st);
-          printf("%-20s inode: %llu\n", entry_ptr->d_name, entry_ptr->d_ino);
-        }
-        break;
-      case '?':
-        printf("invalid option specified");
-        break;
-      default:
-        dir_ptr = opendir("./");
-        while ((entry_ptr = readdir(dir_ptr))) {
-          struct stat st;
-          stat((entry_ptr->d_name), &st);
-          printf("%-20s\n", entry_ptr->d_name);
-        }
+  while ((options = getopt(argc, argv, "n:i")) != -1) {
+    if(options == 'n'){
+
+      dir_ptr = opendir(directory);
+      while ((entry_ptr = readdir(dir_ptr))) {
+        struct stat st;
+        stat((entry_ptr->d_name), &st);
+        printf("%-20s uid: %d gid: %d\n", entry_ptr->d_name, st.st_uid, st.st_gid);
+      }
+      break;
+
+    } else if(options == 'i'){
+
+      dir_ptr = opendir(directory);
+      while ((entry_ptr = readdir(dir_ptr))) {
+        struct stat st;
+        stat((entry_ptr->d_name), &st);
+        printf("%-20s inode: %lu\n", entry_ptr->d_name, entry_ptr->d_ino);
+      }
+      break;
+      
+    }else {
+
+      dir_ptr = opendir("./");
+      while ((entry_ptr = readdir(dir_ptr))) {
+        struct stat st;
+        stat((entry_ptr->d_name), &st);
+        printf("%-20s\n", entry_ptr->d_name);
+      }
+
     }
   }
 }
