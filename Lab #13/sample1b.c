@@ -32,19 +32,19 @@ int main(int argc, char *argv[])
       exit (1);
    }
    else{
-     fileLock.l_type = F_UNLCK;
-     fileLock.l_whence = SEEK_SET;
-     fileLock.l_start = 0;
-     fileLock.l_len = 0;
-     if (fcntl(fd, F_SETLK, &fileLock) < 0){
+      fileLock.l_type = F_UNLCK;
+      fileLock.l_whence = SEEK_SET;
+      fileLock.l_start = 0;
+      fileLock.l_len = 0;
+      if (fcntl(fd, F_SETLK, &fileLock) < 0){
          printf("Unlock error");
-     }
+      }
    }
 
    write (fd, buf, SIZE-2);
 
    sleep (10);
- 
+
    close(fd);
 
    return 0;
